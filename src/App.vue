@@ -13,30 +13,26 @@ export default {
   name: 'app',
   data() {
     return {
-      quitDate: moment.unix(1539122894),
-      now: moment(),
+      quitDate: 1539122894,
+      now: moment().unix(),
       costPerMinute: 0.02060185185,
-      liveTime: 'loading...',
     };
-  },
-  mounted() {
-    setInterval(() => {
-      this.liveTime = moment(this.quitDate.diff(moment())).format('hh [hours] m [minutes and ] ss [ seconds ago]');
-    }, 1000);
   },
   computed: {
     minutesSince() {
-      const DIFF = moment(this.now.diff(this.quitDate));
-      const HOURS = DIFF.format('h') * 60;
-      const MINUTES = DIFF.format('m');
-      return parseInt(HOURS, 0) + parseInt(MINUTES, 0);
+      return ((this.now - this.quitDate) / 60).toFixed(0);
     },
     savings() {
       return (this.costPerMinute * this.minutesSince).toFixed(2);
     },
+    liveTime() {
+      const mins = `${(this.now - this.quitDate) / 60}`.split('.')[0];
+      return `${Math.floor(mins / 60)} hours, ${mins % 60} minutes ago`;
+    },
   },
   methods: {
-    formatDateTime(dateTime) {
+    formatDateTime(epoc) {
+      const dateTime = moment.unix(epoc)
       return `${dateTime.format('dddd')} ${this.ordinal(dateTime.format('DD'))} of ${dateTime.format('MMMM YYYY')} at ${dateTime.format('h:hha')}`;
     },
     ordinal(number) {
@@ -68,7 +64,7 @@ export default {
   box-sizing: border-box;
 }
 p {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 body,
 html {
@@ -81,7 +77,7 @@ html {
   width: 100%;
   padding: 1.25rem;
   background-color: rgb(66, 66, 80);
-  color: #FFFFFF;
+  color: #ffffff;
   text-align: center;
 }
 h1,
